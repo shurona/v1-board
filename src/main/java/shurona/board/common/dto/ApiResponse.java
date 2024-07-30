@@ -1,7 +1,4 @@
-package shurona.board.user.dto;
-
-import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
+package shurona.board.common.dto;
 
 public class ApiResponse<T> {
 
