@@ -2,8 +2,11 @@ package shurona.board.user.domain;
 
 import jakarta.persistence.*;
 import org.hibernate.annotations.UpdateTimestamp;
+import shurona.board.community.domain.Post;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "_User")
@@ -31,6 +34,9 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     private UserRole role;
+
+    @OneToMany(mappedBy = "writer")
+    List<Post> postList = new ArrayList<>();
 
     private LocalDateTime createdAt;
     @UpdateTimestamp

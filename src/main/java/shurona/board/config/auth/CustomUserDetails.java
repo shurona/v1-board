@@ -37,4 +37,7 @@ public class CustomUserDetails implements UserDetails {
         return this.user.getLoginId();
     }
 
+    public Long getUserId() {
+        return this.user.getId();
+    }
 }

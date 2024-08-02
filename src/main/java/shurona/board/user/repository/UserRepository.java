@@ -28,6 +28,10 @@ public class UserRepository {
         List<User> userList =
                 this.em.createQuery(query, User.class).setParameter("loginId", loginId).getResultList();
 
-        return userList.get(0);
+        if (userList.isEmpty()) {
+            return null;
+        } else {
+           return userList.get(0);
+        }
     }
 }

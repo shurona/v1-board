@@ -39,7 +39,7 @@ public class SecurityConfig {
         this.tokenProvider = tokenProvider;
     }
 
-    private String[] allowUrl = {"/", "/error/**", "/index", "/login", "/user/login", "/user/signup", "auth/authenticate"};
+    private String[] allowUrl = {"/", "/error/**", "/index", "/login", "/user/login", "/user/signup", "/auth/authenticate"};
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {

@@ -12,7 +12,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
+import shurona.board.config.auth.CustomUserDetailsService;
 
 import java.security.Key;
 import java.util.Arrays;
@@ -24,9 +27,10 @@ import java.util.stream.Collectors;
 public class TokenProvider implements InitializingBean {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
-    private static final String JWT_AUTH_KEY = "jwt-auth";
+    private static final String JWT_AUTH_KEY = "role";
     private final String secret;
     private final long tokenValidityMilliseconds;
+    private final UserDetailsService userDetailsService;
     private Key key;
 
     /**
@@ -35,9 +39,12 @@ public class TokenProvider implements InitializingBean {
 //    @Autowired
     public TokenProvider(
             @Value("${jwt.secret}") String secret,
-            @Value("${jwt.token-validity-in-seconds}") String tokenValidityMilliseconds) {
+            @Value("${jwt.token-validity-in-seconds}") String tokenValidityMilliseconds,
+            CustomUserDetailsService customUserDetailsService
+    ) {
         this.secret = secret;
         this.tokenValidityMilliseconds = Long.parseLong(tokenValidityMilliseconds) * 1000;
+        this.userDetailsService = customUserDetailsService;
     }
 
     /**
@@ -74,9 +81,7 @@ public class TokenProvider implements InitializingBean {
                 .map(SimpleGrantedAuthority::new)
                 .toList();
 
-        //TODO: principal 생성 부분 확인
-        System.out.println("서브젝 : " + claims.getSubject());
-        User principal = new User(claims.getSubject(), "", authorities);
+        UserDetails principal = this.userDetailsService.loadUserByUsername(claims.getSubject());
 
         return new UsernamePasswordAuthenticationToken(principal, "", authorities);
     }

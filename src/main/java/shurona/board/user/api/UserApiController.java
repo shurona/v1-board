@@ -1,10 +1,15 @@
 package shurona.board.user.api;
 
+import jakarta.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import shurona.board.user.domain.User;
@@ -63,7 +68,14 @@ public class UserApiController {
     }
 
     @GetMapping("{id}")
-    public ApiResponse<UserOutput> findUserById(@PathVariable("id") Long userId) {
+    public ApiResponse<UserOutput> findUserById(
+            Authentication authentication,
+            HttpSession session,
+            @PathVariable("id") Long userId) {
+        UserDetails principal = (UserDetails) authentication.getPrincipal();
+
+        System.out.println("여기는 뭐야 : " + principal.getUsername());
+
         User finduser = this.userService.findByUserId(userId);
         if (finduser == null) {
             return ApiResponse.fail(404, "없는 유저입니다.");
